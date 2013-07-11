@@ -21,12 +21,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
 from github import Github
 
 
 class GitHub(object):
     def __init__(self):
-        self.gh = Github()
+        token = os.environ.get('SGIT_GITHUB_TOKEN', '')
+        self.gh = Github(token)
 
     def get_repositories(self, args):
         owner_type = args[0]
