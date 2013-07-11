@@ -25,6 +25,7 @@ import sys
 import os
 from subprocess import check_call, CalledProcessError
 
+from gh import GitHub
 
 BOLD = 1
 GREEN = 32
@@ -55,12 +56,24 @@ def color(text, *codes):
 
 def main(argv=sys.argv[1:]):
     try:
-        for path in gitdirs('.'):
-            name = path if path != '.' else 'current'
-            print >> sys.stderr, '#\n# {arrow} {name}\n#'.format(
+        if argv[0] in ("-o", "-u"):
+            hub = GitHub()
+            repos = hub.get_repositories(argv)
+
+            for repo in repos:
+                print >> sys.stderr, '#\n# {arrow} {repo}\n#'.format(
+                    repo=color("Cloning Repository '{0}'".format(repo), BOLD),
+                    arrow=color('=>', BOLD, GREEN)
+                )
+                check_call(['git', 'clone', repo])
+        else:
+            for path in gitdirs('.'):
+                name = path if path != '.' else 'current'
+                print >> sys.stderr, '#\n# {arrow} {name}\n#'.format(
                     name=color("Repository '{0}'".format(name), BOLD),
-                    arrow=color('=>', BOLD, GREEN))
-            git(path, argv)
+                    arrow=color('=>', BOLD, GREEN)
+                )
+                git(path, argv)
     except CalledProcessError:
         print >> sys.stderr, 'terminated'
     except KeyboardInterrupt:
@@ -69,4 +82,3 @@ def main(argv=sys.argv[1:]):
 
 if __name__ == '__main__':
     main()
-
