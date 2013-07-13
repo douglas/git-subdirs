@@ -22,13 +22,29 @@
 # SOFTWARE.
 
 import os
+
+from os.path import exists, join, abspath
+from subprocess import check_call
+
 from github import Github
+from .colors import pprinter
 
 
 class GitHub(object):
     def __init__(self):
         token = os.environ.get('SGIT_GITHUB_TOKEN', '')
         self.gh = Github(token)
+
+    def clone_repositories(self, args):
+        repos = self.get_repositories(args)
+        for repo in repos:
+            repo_basename = repo.split('/')[-1][:-4]
+
+            if exists(join(abspath(os.curdir), repo_basename)):
+                pprinter('Repository already exists:', repo_basename)
+            else:
+                pprinter('Cloning Repository', repo)
+                check_call(['git', 'clone', repo])
 
     def get_repositories(self, args):
         owner_type = args[0]

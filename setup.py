@@ -4,8 +4,8 @@ from setuptools import setup
 
 setup(
     name='git-subdirs',
-    version='0.2',
-    py_modules=['gitsubdirs', 'gh'],
+    version='0.4',
+    py_modules=['gitsubdirs', 'plugins/__init__', 'plugins/gh', 'plugins/colors'],
     entry_points={
         'console_scripts': ['sgit = gitsubdirs:main']
     },

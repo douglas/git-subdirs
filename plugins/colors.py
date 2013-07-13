@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 Andrey Vlasovskikh
+# Copyright (C) 2013 Douglas Soares de Andrade
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,20 @@
 # SOFTWARE.
 
 import sys
-import os
-from subprocess import check_call, CalledProcessError
 
-from plugins.colors import pprinter
-
-
-def git(repo, argv):
-    cwd = os.getcwd()
-    os.chdir(repo)
-    try:
-        check_call(['git'] + argv)
-    finally:
-        os.chdir(cwd)
+BOLD = 1
+GREEN = 32
 
 
-def gitdirs(basedir):
-    for root, dirs, files in os.walk(basedir):
-        for dir in dirs:
-            if dir == '.git':
-                yield os.path.normpath(root)
+def color(text, *codes):
+    s = ';'.join(str(x) for x in codes)
+    return '{start}{text}{end}'.format(text=text,
+                                       start='\033[{0}m'.format(s),
+                                       end='\033[0m')
 
 
-def main(argv=sys.argv[1:]):
-    try:
-        if argv[0] in ("-o", "-u"):
-            from plugins.gh import GitHub
-            hub = GitHub()
-            hub.clone_repositories(argv)
-        else:
-            for path in gitdirs('.'):
-                name = path if path != '.' else 'current'
-                pprinter('Repository', name)
-                git(path, argv)
-    except CalledProcessError:
-        print >> sys.stderr, 'terminated'
-    except KeyboardInterrupt:
-        print >> sys.stderr, 'interrupted'
-
-
-if __name__ == '__main__':
-    main()
+def pprinter(description, variable):
+    print >> sys.stderr, '#\n# {arrow} {variable}\n#'.format(
+        variable=color(description + " '{0}'".format(variable), BOLD),
+        arrow=color('=>', BOLD, GREEN)
+    )
