@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 # Copyright (C) 2011 Andrey Vlasovskikh
+# Copyright (C) 2013 Douglas Soares de Andrade
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
